@@ -87,6 +87,16 @@ void LineCounter::CountLinesInFile(const std::string& file_path)
     m_total_line_counts += counts;
 }
 
+bool LineCounter::CheckForSingleFile(const std::string& root_folder)
+{
+    if (!std::filesystem::is_directory(root_folder))
+    {
+        ProcessFile(std::filesystem::directory_entry(root_folder));
+        return false;
+    }
+    return true;
+}
+
 bool LineCounter::IsCppOrCFile(const std::string& extension)
 {
     return extension == ".h" || extension == ".hpp" || extension == ".c" || extension == ".cpp";
@@ -109,6 +119,10 @@ void LineCounter::ProcessFile(const std::filesystem::directory_entry& entry)
 
 void LineCounter::ProcessDirectory(const std::string& root_folder)
 {
+    if (!CheckForSingleFile(root_folder))
+    {
+        return;
+    }
     try
     {
         for (const auto& entry : std::filesystem::recursive_directory_iterator(root_folder))
@@ -141,6 +155,10 @@ void LineCounter::ProcessFileConcurrently(const std::filesystem::directory_entry
 
 void LineCounter::ProcessDirectoryConcurrently(const std::string& root_folder)
 {
+    if (!CheckForSingleFile(root_folder))
+    {
+        return;
+    }
     try
     {
         std::vector<std::future<void>> tasks;

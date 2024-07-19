@@ -18,6 +18,8 @@ public:
 	void ProcessDirectoryConcurrently(const std::string& root_folder);
 
 	void SaveToStream(std::ostream& os, std::chrono::duration<double>);
+
+	LineCountStatistic get_total_line_count() { return m_total_line_counts; }
 	
 private:
 	LineCountStatistic m_total_line_counts;
@@ -26,5 +28,6 @@ private:
 	
 	void CountLinesInFile(const std::string& file_path);
 	bool static IsCppOrCFile(const std::string& extension);
+	bool CheckForSingleFile(const std::string& root_folder);
 };
 
